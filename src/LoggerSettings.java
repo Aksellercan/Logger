@@ -32,7 +32,7 @@ public class LoggerSettings {
         LoggerSettings.log_path = log_path;
     }
 
-    public static boolean isDebugOutput() {
+    public static boolean getDebugOutput() {
         return debugOutput;
     }
 
@@ -40,7 +40,7 @@ public class LoggerSettings {
         LoggerSettings.debugOutput = debugOutput;
     }
 
-    public static boolean isVerboseLogFile() {
+    public static boolean getVerboseLogFile() {
         return verboseLogFile;
     }
 
@@ -48,7 +48,7 @@ public class LoggerSettings {
         LoggerSettings.verboseLogFile = verboseLogFile;
     }
 
-    public static boolean isColouredOutput() {
+    public static boolean getColouredOutput() {
         return colouredOutput;
     }
 
@@ -56,7 +56,7 @@ public class LoggerSettings {
         LoggerSettings.colouredOutput = colouredOutput;
     }
 
-    public static boolean isEnableStackTraces() {
+    public static boolean getEnableStackTraces() {
         return enableStackTraces;
     }
 
@@ -64,7 +64,7 @@ public class LoggerSettings {
         LoggerSettings.enableStackTraces = enableStackTraces;
     }
 
-    public static boolean isQuiet() {
+    public static boolean getQuiet() {
         return quiet;
     }
 

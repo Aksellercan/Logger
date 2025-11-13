@@ -20,23 +20,23 @@ public class Main {
                 colour = %s
                 stacktrace = %s
                 verbose = %s
-                """, LoggerSettings.isDebugOutput(), LoggerSettings.isColouredOutput(), LoggerSettings.isEnableStackTraces(), LoggerSettings.isVerboseLogFile());
-        Logger.INFO.log("yet");
+                """, LoggerSettings.getDebugOutput(), LoggerSettings.getColouredOutput(), LoggerSettings.getEnableStackTraces(), LoggerSettings.getVerboseLogFile());
+        Logger.INFO.Log("yet");
         Thread loggerThread = new Thread(new LoggerBackend());
+        loggerThread.setDaemon(true);
         loggerThread.start();
 
         readConfigConcurrently();
 
-        Logger.INFO.log("hello");
-        Logger.WARN.logSilently("test");
-        Logger.DEBUG.log("To stop press ENTER...");
+        Logger.INFO.Log("hello");
+        Logger.WARN.LogSilently("test");
+        Logger.DEBUG.Log("To stop press ENTER...");
         long endTime = System.currentTimeMillis();
         System.out.println("Start time: " + startTime + ", End time: " + endTime + ". Total execution time: " + (endTime - startTime) + "ms");
         if ((char) new BufferedReader(new InputStreamReader(System.in)).read() == '\n') {
-            Logger.INFO.logIfTrue(LoggerSettings.isColouredOutput());
+            Logger.INFO.LogIfTrue(LoggerSettings.getColouredOutput());
             LoggerSettings.setColouredOutput(false);
-            Logger.THREAD_INFO.logThread(Thread.currentThread(), "Exiting...", true);
-            System.exit(0);
+            Logger.THREAD_INFO.LogThread(Thread.currentThread(), "Exiting...", true);
         }
     }
 }

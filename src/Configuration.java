@@ -43,7 +43,7 @@ public abstract class Configuration {
             switch (token.getKey().replace("\t", "")) {
                 case "output_debug":
                     if (update) {
-                        token.setValue(String.valueOf(LoggerSettings.isDebugOutput()));
+                        token.setValue(String.valueOf(LoggerSettings.getDebugOutput()));
                         token.setCategoryType("Logger Options");
                         break;
                     }
@@ -51,7 +51,7 @@ public abstract class Configuration {
                     break;
                 case "verbose_log_file":
                     if (update) {
-                        token.setValue(String.valueOf(LoggerSettings.isVerboseLogFile()));
+                        token.setValue(String.valueOf(LoggerSettings.getVerboseLogFile()));
                         token.setCategoryType("Logger Options");
                         break;
                     }
@@ -59,7 +59,7 @@ public abstract class Configuration {
                     break;
                 case "enable_stack_traces":
                     if (update) {
-                        token.setValue(String.valueOf(LoggerSettings.isEnableStackTraces()));
+                        token.setValue(String.valueOf(LoggerSettings.getEnableStackTraces()));
                         token.setCategoryType("Logger Options");
                         break;
                     }
@@ -76,23 +76,23 @@ public abstract class Configuration {
                     break;
                 case "quiet":
                     if (update) {
-                        token.setValue(String.valueOf(LoggerSettings.isQuiet()));
+                        token.setValue(String.valueOf(LoggerSettings.getQuiet()));
                         token.setCategoryType("Logger Options");
                         break;
                     }
                     LoggerSettings.setQuiet(BooleanParse(token.getValue(), false));
-                    Logger.INFO.logIfTrue("Logger quiet", LoggerSettings.isQuiet(), true, true);
+                    Logger.INFO.LogIfTrue("Logger quiet", LoggerSettings.getQuiet(), true, true);
                     break;
                 case "coloured_output":
                     if (update) {
-                        token.setValue(String.valueOf(LoggerSettings.isColouredOutput()));
+                        token.setValue(String.valueOf(LoggerSettings.getColouredOutput()));
                         token.setCategoryType("Logger Options");
                         break;
                     }
                     LoggerSettings.setColouredOutput(BooleanParse(token.getValue(), false));
                     break;
                 default:
-                    Logger.WARN.logSilently("Key \"" + token.getKey() + "\" is invalid");
+                    Logger.WARN.LogSilently("Key \"" + token.getKey() + "\" is invalid");
             }
         }
     }
@@ -126,7 +126,7 @@ public abstract class Configuration {
             if (status) {
                 throw new IOException("Failed to create config directory");
             }
-            Logger.INFO.logSilently("Created config directory");
+            Logger.INFO.LogSilently("Created config directory");
         }
         File filePath = new File(folderPath + File.separator + fileNameWithExtension);
         if (!filePath.exists()) {
@@ -134,7 +134,7 @@ public abstract class Configuration {
             if (!status) {
                 throw new IOException("Failed to create config file");
             }
-            Logger.INFO.logSilently("Created config file");
+            Logger.INFO.LogSilently("Created config file");
         }
         return filePath;
     }
@@ -152,7 +152,7 @@ public abstract class Configuration {
             return value.equals("true");
         }
         if (!value.isEmpty())
-            Logger.ERROR.logSilently("Key value \"" + value + "\" is not valid. Expected \"true\" or \"false\".");
+            Logger.ERROR.LogSilently("Key value \"" + value + "\" is not valid. Expected \"true\" or \"false\".");
         return returnValue;
     }
 }

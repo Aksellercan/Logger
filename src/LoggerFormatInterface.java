@@ -1,4 +1,4 @@
 public interface LoggerFormatInterface {
-    String DateSeverityFormat(Log log);
-    void ColourOutput(Log log, String fullMessage);
+    String DateSeverityFormat(LogObject log);
+    void ColourOutput(LogObject log, String fullMessage);
 }

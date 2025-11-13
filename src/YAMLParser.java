@@ -12,13 +12,13 @@ public class YAMLParser extends Configuration implements Parsers {
     public static void ReadConfigAndMap() {
         try {
             YAMLParser yamlParser = new YAMLParser();
-            Logger.INFO.log("Using YAML Reader, with no token type checker");
-            Logger.THREAD_INFO.logThread(Thread.currentThread(), "Reading config on thread: " + Thread.currentThread().getName());
+            Logger.INFO.Log("Using YAML Reader, with no token type checker");
+            Logger.THREAD_INFO.LogThread(Thread.currentThread(), "Reading config on thread: " + Thread.currentThread().getName());
             tokenConfig = yamlParser.LoadKeys();
             yamlParser.ReadConfig();
             yamlParser.MapKeys(tokenConfig.length == 0);
         } catch (Exception e) {
-            Logger.CRITICAL.logException(e, "Unable to read configuration");
+            Logger.CRITICAL.LogException(e, "Unable to read configuration");
         }
     }
 
@@ -31,7 +31,7 @@ public class YAMLParser extends Configuration implements Parsers {
             yamlParser.MapKeys(true);
             yamlParser.WriteConfig();
         } catch (Exception e) {
-            Logger.CRITICAL.logException(e, "Unable to write configuration to file");
+            Logger.CRITICAL.LogException(e, "Unable to write configuration to file");
         }
     }
 
@@ -50,12 +50,12 @@ public class YAMLParser extends Configuration implements Parsers {
                         count++;
                     }
                 }
-                Logger.DEBUG.log("Writing key: value " + current.getKey() + ": " + (current.isSensitiveInfo() ? "<SensitiveInfo>" : current.getValue()));
+                Logger.DEBUG.Log("Writing key: value " + current.getKey() + ": " + (current.isSensitiveInfo() ? "<SensitiveInfo>" : current.getValue()));
                 fw.write(current.getKey() + ": " + current.getValue() + "\n");
             }
-            Logger.INFO.log("Saved changes.");
+            Logger.INFO.Log("Saved changes.");
         } catch (Exception e) {
-            Logger.CRITICAL.logException(e, "Failed to write configuration");
+            Logger.CRITICAL.LogException(e, "Failed to write configuration");
         }
     }
 
@@ -82,11 +82,11 @@ public class YAMLParser extends Configuration implements Parsers {
                 if (splitLine.length == 2) {
                     FindAndSetToken(splitLine[0].trim(), splitLine[1].trim());
                 } else {
-                    Logger.ERROR.logSilently("Invalid line at " + lineCount + ": \"" + line + "\", expected format: \"key: value\". Continue reading the file.");
+                    Logger.ERROR.LogSilently("Invalid line at " + lineCount + ": \"" + line + "\", expected format: \"key: value\". Continue reading the file.");
                 }
             }
         } catch (Exception e) {
-            Logger.CRITICAL.logException(e, "Failed to read configuration");
+            Logger.CRITICAL.LogException(e, "Failed to read configuration");
         }
     }
 }

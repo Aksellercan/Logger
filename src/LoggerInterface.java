@@ -1,33 +1,33 @@
 public interface LoggerInterface extends LoggerQueueInterface {
     //Logger methods
-    void log(String message);
-    void log(String message, boolean writeToFile);
-    void log(String message, boolean writeToFile, boolean force);
+    void Log(String message);
+    void Log(String message, boolean writeToFile);
+    void Log(String message, boolean writeToFile, boolean force);
 
     //Log if true
-    void logIfTrue(boolean statement);
-    void logIfTrue(String message, boolean statement);
-    void logIfTrue(boolean statement, boolean writeToFile, boolean force);
-    void logIfTrue(String message, boolean statement, boolean writeToFile, boolean force);
+    void LogIfTrue(boolean statement);
+    void LogIfTrue(String message, boolean statement);
+    void LogIfTrue(boolean statement, boolean writeToFile, boolean force);
+    void LogIfTrue(String message, boolean statement, boolean writeToFile, boolean force);
 
     //Log threads
-    void logThread(Thread thread, String message);
-    void logThread(Thread thread, String message, boolean writeToFile);
-    void logThread(Thread thread, String message, boolean writeToFile, boolean force);
+    void LogThread(Thread thread, String message);
+    void LogThread(Thread thread, String message, boolean writeToFile);
+    void LogThread(Thread thread, String message, boolean writeToFile, boolean force);
 
     //Log exceptions
-    void logException(Exception e, String message);
-    void logException(Exception e, String message, boolean writeToFile);
-    void logException(Exception e);
-    void logException(Exception e, boolean writeToFile);
+    void LogException(Exception e, String message);
+    void LogException(Exception e, String message, boolean writeToFile);
+    void LogException(Exception e);
+    void LogException(Exception e, boolean writeToFile);
 
     //Log exceptions in threads
-    void logThreadException(Thread thread, Exception e);
-    void logThreadException(Thread thread, Exception e, boolean writeToFile);
-    void logThreadException(Thread thread, Exception e, String message);
-    void logThreadException(Thread thread, Exception e, String message, boolean writeToFile);
+    void LogThreadException(Thread thread, Exception e);
+    void LogThreadException(Thread thread, Exception e, boolean writeToFile);
+    void LogThreadException(Thread thread, Exception e, String message);
+    void LogThreadException(Thread thread, Exception e, String message, boolean writeToFile);
 
     //Log silently
-    void logSilently(String message);
-    void logExceptionSilently(Exception e, String message);
+    void LogSilently(String message);
+    void LogExceptionSilently(Exception e, String message);
 }

@@ -10,7 +10,7 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
     @Override
     public void run() {
         Thread.currentThread().setName(generateThreadName());
-        Logger.THREAD_INFO.logThread(Thread.currentThread(), "Started logger service on thread: " + Thread.currentThread().getName());
+        Logger.THREAD_INFO.LogThread(Thread.currentThread(), String.format("Started logger service on thread: %s :: Daemon = %s", Thread.currentThread().getName(), Thread.currentThread().isDaemon()));
         keepThreadAlive();
     }
 
@@ -23,20 +23,49 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
     public void keepThreadAlive() {
         while (!Thread.interrupted()) {
             if (!logQueue.isEmpty()) {
-                for (Log log : logQueue) {
+                for (LogObject log : logQueue) {
                     if (!log.isLogged()) {
-                        if (log.isSilent()) {
-                            saveLog(DateSeverityFormat(log) + log.getMessage());
-                            log.setLogged(true);
-                            logQueue.remove(log);
-                            continue;
-                        }
-                        writeLogController(log);
-                    };
+                        log.setLogged(SeverityController(log));
+                        logQueue.remove(log);
+                    }
                 }
-                System.out.printf("Size of queue: %d\n", logQueue.size());
             }
         }
+    }
+
+    private boolean getQuietDecision(LogObject log) {
+        if (LoggerSettings.getQuiet()) {
+            if (log.isForce()) {
+                return true;
+            }
+        }
+        return !LoggerSettings.getQuiet();
+    }
+
+    private boolean SeverityController(LogObject log) {
+        try {
+            if (!getQuietDecision(log)) return true;
+            if (log.isSilent()) {
+                saveLog(DateSeverityFormat(log) + log.getMessage());
+                log.setLogged(true);
+                return true;
+            }
+            if (log instanceof LogExceptionObject) {
+                LogExceptionObject logExceptionObject = (LogExceptionObject) log;
+                if (logExceptionObject.isExceptionLog()) {
+                    if (logExceptionObject.getMessage() == null)
+                        WriteExceptions(logExceptionObject);
+                    else
+                        WriteExceptionMessageLogs(logExceptionObject);
+                    return true;
+                }
+            }
+            writeLogController(log);
+        } catch (Exception e) {
+            Logger.THREAD_CRITICAL.LogThreadException(Thread.currentThread(), e, "Failed to log for log with ID " + log.getId());
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -48,18 +77,16 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
      *
      * @param log Log from queue
      */
-    private void writeLogController(Log log) {
+    private void writeLogController(LogObject log) {
         String fullMessage = DateSeverityFormat(log) + log.getMessage();
-        if (!LoggerSettings.isDebugOutput() && (log.getSeverityEnum() == Logger.DEBUG || log.getSeverityEnum() == Logger.THREAD_DEBUG)) {
-            if (LoggerSettings.isVerboseLogFile() && log.isWriteToFile()) saveLog(fullMessage);
+        if (!LoggerSettings.getDebugOutput() && (log.getSeverityEnum() == Logger.DEBUG || log.getSeverityEnum() == Logger.THREAD_DEBUG)) {
+            if (LoggerSettings.getVerboseLogFile() && log.isWriteToFile()) saveLog(fullMessage);
             log.setLogged(true);
-            logQueue.remove(log);
             return;
         } else if (log.getSeverityEnum() == Logger.DEBUG) {
-            if (LoggerSettings.isVerboseLogFile() && log.isWriteToFile()) saveLog(fullMessage);
+            if (LoggerSettings.getVerboseLogFile() && log.isWriteToFile()) saveLog(fullMessage);
             ColourOutput(log, fullMessage);
             log.setLogged(true);
-            logQueue.remove(log);
             return;
         }
         if (log.isWriteToFile()) {
@@ -67,14 +94,13 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
         }
         ColourOutput(log, fullMessage);
         log.setLogged(true);
-        logQueue.remove(log);
     }
 
     public void saveLog(String fullMessage) {
         try (FileWriter writer = new FileWriter(getLogFile(generateFilename()), true)) {
             writer.write(fullMessage + "\n");
         } catch (IOException e) {
-            Logger.CRITICAL.logException(e, "Error while writing logs", false);
+            Logger.CRITICAL.LogException(e, "Error while writing logs", false);
         }
     }
 
@@ -115,15 +141,15 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
     }
 
     @Override
-    public String DateSeverityFormat(Log log) {
+    public String DateSeverityFormat(LogObject log) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        return now.format(formatter) + log.getSeverity() + "id:" + log.getId() + " ";
+        return now.format(formatter) + log.getSeverity();
     }
 
     @Override
-    public void ColourOutput(Log log, String fullMessage) {
-        if (LoggerSettings.isColouredOutput()) {
+    public void ColourOutput(LogObject log, String fullMessage) {
+        if (LoggerSettings.getColouredOutput()) {
             switch (log.getSeverityEnum()) {
                 case THREAD_INFO:
                     System.out.println(ConsoleColours.GREEN_BOLD_BRIGHT + fullMessage + ConsoleColours.RESET);
@@ -163,9 +189,9 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
         }
     }
 
-    private void WriteExceptions(LogException log) {
+    private void WriteExceptions(LogExceptionObject log) {
         String fullMessage;
-        if (LoggerSettings.isEnableStackTraces()) {
+        if (LoggerSettings.getEnableStackTraces()) {
             fullMessage = DateSeverityFormat(log) + log.getException().getMessage() + "\n" + GetStackTraceAsString(log.getException());
         } else {
             fullMessage = DateSeverityFormat(log) + log.getException().getMessage();
@@ -176,9 +202,9 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
         ColourOutput(log, fullMessage);
     }
 
-    private void WriteExceptionMessageLogs(LogException log) {
+    private void WriteExceptionMessageLogs(LogExceptionObject log) {
         String fullMessage;
-        if (LoggerSettings.isEnableStackTraces()) {
+        if (LoggerSettings.getEnableStackTraces()) {
             fullMessage = DateSeverityFormat(log) + log.getMessage() + ". Exception: " + log.getException().getMessage() + "\n" + GetStackTraceAsString(log.getException());
         } else {
             fullMessage = DateSeverityFormat(log) + log.getMessage() + ". Exception: " + log.getException().getMessage();
