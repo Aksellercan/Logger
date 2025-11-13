@@ -1,3 +1,6 @@
+/**
+ * Front end of Logger, runs synchronously and adds logs to log queue for backend to handle
+ */
 public enum Logger implements LoggerInterface {
     INFO(" [ INFO ] "),
     WARN(" [ WARN ] "),

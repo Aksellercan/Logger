@@ -26,10 +26,12 @@ public class LogThreadObject extends LogObject {
         this.thread = thread;
     }
 
+    private boolean isThreadSeverity() {
+        return (severityEnum.equals(Logger.THREAD_CRITICAL) || severityEnum.equals(Logger.THREAD_INFO) || severityEnum.equals(Logger.THREAD_DEBUG) || severityEnum.equals(Logger.THREAD_ERROR) || severityEnum.equals(Logger.THREAD_WARN));
+    }
+
     public String setThreadSeverity() {
-        if (severityEnum.equals(Logger.THREAD_CRITICAL) ||
-        severityEnum.equals(Logger.THREAD_INFO) || severityEnum.equals(Logger.THREAD_DEBUG) || severityEnum.equals(Logger.THREAD_ERROR) ||
-        severityEnum.equals(Logger.THREAD_WARN)) {
+        if (isThreadSeverity()) {
             StringBuilder sb = new StringBuilder();
             boolean add = false;
             for (int i = 0; i < this.getSeverity().length(); i++) {
