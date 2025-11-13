@@ -75,7 +75,8 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
                 log.setLogged(true);
                 return true;
             }
-            if (log instanceof LogExceptionObject logExceptionObject) {
+            if (log instanceof LogExceptionObject) {
+                LogExceptionObject logExceptionObject = (LogExceptionObject) log;
                 if (logExceptionObject.isExceptionLog()) {
                     if (logExceptionObject.getMessage() == null)
                         writeExceptions(logExceptionObject);

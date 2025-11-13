@@ -33,3 +33,4 @@ logs/
 config/
 .idea/
 Logger.iml
+javaDocs/
