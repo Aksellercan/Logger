@@ -15,9 +15,13 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
      */
     @Override
     public void run() {
-        Thread.currentThread().setName(generateThreadName());
-        Logger.THREAD_INFO.LogThread(Thread.currentThread(), String.format("Started logger service on thread: %s :: Daemon = %s", Thread.currentThread().getName(), Thread.currentThread().isDaemon()));
-        keepThreadAlive();
+        try {
+            Thread.currentThread().setName(generateThreadName());
+            Logger.THREAD_INFO.LogThread(Thread.currentThread(), String.format("Started logger service on thread: %s :: Daemon = %s", Thread.currentThread().getName(), Thread.currentThread().isDaemon()));
+            keepThreadAlive();
+        } catch (InterruptedException e) {
+            Logger.THREAD_CRITICAL.LogThreadException(Thread.currentThread(), e, "Thread Interrupted");
+        }
     }
 
     /**
@@ -35,7 +39,7 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
     /**
      * Keeps thread from getting killed
      */
-    public void keepThreadAlive() {
+    public void keepThreadAlive() throws InterruptedException {
         while (!Thread.interrupted()) {
             if (!logQueue.isEmpty()) {
                 for (LogObject log : logQueue) {
@@ -45,6 +49,7 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
                     }
                 }
             }
+            Thread.sleep(LoggerSettings.getLoggerResponseRate());
         }
     }
 
