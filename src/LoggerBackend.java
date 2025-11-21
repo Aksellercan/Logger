@@ -169,7 +169,7 @@ public class LoggerBackend implements LoggerBackendInterface, Runnable {
         }
         File logFile = new File(logPath + File.separator + fileName + ".log");
         if (!Files.exists(logFile.toPath())) {
-            Path createdLogFile = Files.createDirectories(logFile.toPath());
+            Path createdLogFile = Files.createFile(logFile.toPath());
             if (!Files.exists(createdLogFile)) {
                 throw new IOException("Could not create log file");
             }
